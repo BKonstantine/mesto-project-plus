@@ -1,33 +1,50 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { CustomRequest } from "types/types";
 import cardModel from "../models/card";
 import { ObjectId } from "mongoose";
 import NotFoundError from "../errors/not-found-error";
 import IncorrectDataError from "../errors/incorrect-data-error";
 
-export const getCards = async (req: Request, res: Response) => {
-  const cards = await cardModel.find();
-  res.send(cards);
+export const getCards = (req: Request, res: Response, next: NextFunction) => {
+  cardModel
+    .find({})
+    .then((cards) => res.send(cards))
+    .catch(next);
 };
 
-export const createCard = (req: CustomRequest, res: Response) => {
+export const createCard = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, link } = req.body;
   const owner = req.user?._id;
   cardModel
     .create({ name, link, owner })
-    .then((card) => res.send({ data: card }));
+    .then((card) => res.send({ data: card }))
+    .catch(next);
 };
 
-export const deleteCardById = async (req: Request, res: Response) => {
+export const deleteCardById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { cardId } = req.params;
     await cardModel.findByIdAndDelete(cardId);
     const cards = await cardModel.find({});
     res.send({ data: cards });
-  } catch (error) {}
+  } catch {
+    return next(new NotFoundError("Карточка не найдена"));
+  }
 };
 
-export const likeCardById = (req: CustomRequest, res: Response) => {
+export const likeCardById = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   cardModel
     .findByIdAndUpdate(
@@ -35,10 +52,15 @@ export const likeCardById = (req: CustomRequest, res: Response) => {
       { $addToSet: { likes: req.user?._id } },
       { new: true }
     )
-    .then((card) => res.send({ data: card }));
+    .then((card) => res.send({ data: card }))
+    .catch(() => next(new NotFoundError("Карточка не найдена")));
 };
 
-export const dislikeCardById = (req: CustomRequest, res: Response) => {
+export const dislikeCardById = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const userId = req.user?._id;
   const { cardId } = req.params;
   if (!userId) {
@@ -51,5 +73,5 @@ export const dislikeCardById = (req: CustomRequest, res: Response) => {
       { new: true }
     )
     .then((card) => res.send({ data: card }))
-
+    .catch(() => next(new NotFoundError("Карточка не найдена")));
 };

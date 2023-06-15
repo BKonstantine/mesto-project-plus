@@ -20,7 +20,7 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 app.use((req, res, next) => {
-  next(new NotFoundError('404. Такой страницы не существует.'));
+  next(new NotFoundError('Такой страницы не существует!'));
 });
 app.use(errors());
 app.use(errorsMiddleware);
