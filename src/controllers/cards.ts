@@ -3,7 +3,6 @@ import { CustomRequest } from "types/types";
 import cardModel from "../models/card";
 import { ObjectId } from "mongoose";
 import NotFoundError from "../errors/not-found-error";
-import IncorrectDataError from "../errors/incorrect-data-error";
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   cardModel
