@@ -1,9 +1,9 @@
 import { Router } from "express";
-
+import { getCards, createCard } from "../controllers/cards";
 const router = Router();
 
-router.get("/");
-router.post("/");
+router.get("/", getCards);
+router.post("/", createCard);
 router.delete("/:cardId");
 router.put("/:cardId/likes");
 router.delete("/:cardId/likes");

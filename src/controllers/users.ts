@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { CustomRequest } from "types/types";
 import userModel from "../models/user";
 
 export const getUsers = async (req: Request, res: Response) => {
@@ -13,7 +12,7 @@ export const getUserById = async (req: Request, res: Response) => {
   res.send(user);
 };
 
-export const createUser = (req: CustomRequest, res: Response) => {
+export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
   return userModel
     .create({ name, about, avatar })
