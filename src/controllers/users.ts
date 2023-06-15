@@ -17,13 +17,30 @@ export const getUserById = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
+  const { userId } = req.params;
+
+  userModel
+    .findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError("Пользователь не найден");
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err instanceof Error.CastError) {
+        next(new IncorrectDataError("Некорректные данные пользователя"));
+      }
+      next(err);
+    });
+
+  /* try {
     const { userId } = req.params;
     const user = await userModel.findById(userId);
     res.send(user);
   } catch (error) {
     return next(new NotFoundError("Пользователь не найден"));
-  }
+  } */
 };
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
@@ -33,7 +50,11 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof Error.ValidationError) {
-        next(new IncorrectDataError("Некорректные данные при создании пользователя"));
+        next(
+          new IncorrectDataError(
+            "Некорректные данные при создании пользователя"
+          )
+        );
       } else {
         next(err);
       }
