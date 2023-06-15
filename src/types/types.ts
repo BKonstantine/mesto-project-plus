@@ -7,6 +7,6 @@ export interface CustomRequest extends Request {
 }
 
 export type Error = {
-  status: number;
+  statusCode: number;
   message: string;
 };
