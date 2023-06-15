@@ -10,8 +10,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 app.use(express.json());
 
-app.use("/users", usersRouter);
+app.use(auth);
 
-/* app.use(auth); */
+app.use("/users", usersRouter);
 
 app.listen(PORT);
