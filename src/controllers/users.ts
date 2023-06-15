@@ -14,7 +14,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
-  return userModel
+  userModel
     .create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
