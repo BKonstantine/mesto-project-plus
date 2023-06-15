@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { CustomRequest } from "types/types";
 import cardModel from "../models/card";
 import { ObjectId } from "mongoose";
-import NotFoundError from '../errors/not-found-error'
+import NotFoundError from "../errors/not-found-error";
 import IncorrectDataError from "../errors/incorrect-data-error";
 
 export const getCards = async (req: Request, res: Response) => {
@@ -15,8 +15,7 @@ export const createCard = (req: CustomRequest, res: Response) => {
   const owner = req.user?._id;
   cardModel
     .create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: "Произошла ошибка" }));
+    .then((card) => res.send({ data: card }));
 };
 
 export const deleteCardById = async (req: Request, res: Response) => {
@@ -25,9 +24,7 @@ export const deleteCardById = async (req: Request, res: Response) => {
     await cardModel.findByIdAndDelete(cardId);
     const cards = await cardModel.find({});
     res.send({ data: cards });
-  } catch (error) {
-    res.status(500).send({ message: "Произошла ошибка" });
-  }
+  } catch (error) {}
 };
 
 export const likeCardById = (req: CustomRequest, res: Response) => {
@@ -38,8 +35,7 @@ export const likeCardById = (req: CustomRequest, res: Response) => {
       { $addToSet: { likes: req.user?._id } },
       { new: true }
     )
-    .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+    .then((card) => res.send({ data: card }));
 };
 
 export const dislikeCardById = (req: CustomRequest, res: Response) => {
@@ -55,5 +51,5 @@ export const dislikeCardById = (req: CustomRequest, res: Response) => {
       { new: true }
     )
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+
 };

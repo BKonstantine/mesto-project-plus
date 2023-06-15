@@ -6,9 +6,7 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userModel.find();
     res.send(users);
-  } catch {
-    res.status(500).send({ message: "Произошла ошибка" });
-  }
+  } catch (error) {}
 };
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -16,17 +14,14 @@ export const getUserById = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const user = await userModel.findById(userId);
     res.send(user);
-  } catch {
-    res.status(500).send({ message: "Произошла ошибка" });
-  }
+  } catch (error) {}
 };
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
   userModel
     .create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+    .then((user) => res.send({ data: user }));
 };
 
 export const updateCurrentUser = async (req: CustomRequest, res: Response) => {
@@ -35,8 +30,7 @@ export const updateCurrentUser = async (req: CustomRequest, res: Response) => {
   const userId = req.user?._id;
   userModel
     .findByIdAndUpdate(userId, { name, about }, { new: true })
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+    .then((user) => res.send({ data: user }));
 };
 
 export const updateAvatarCurrentUser = async (
@@ -48,6 +42,5 @@ export const updateAvatarCurrentUser = async (
   const userId = req.user?._id;
   userModel
     .findByIdAndUpdate(userId, { avatar }, { new: true })
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+    .then((user) => res.send({ data: user }));
 };
