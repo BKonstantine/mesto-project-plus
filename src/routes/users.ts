@@ -5,7 +5,7 @@ import {
   createUser,
   getUserById,
   updateCurrentUser,
-  updateAvatarCurrentUser,
+  updateAvatarCurrentUser
 } from "../controllers/users";
 
 const router = Router();
@@ -15,8 +15,8 @@ router.get(
   "/:userId",
   celebrate({
     params: Joi.object().keys({
-      userId: Joi.string().required(),
-    }),
+      userId: Joi.string().required()
+    })
   }),
   getUserById
 );
@@ -26,8 +26,8 @@ router.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
       about: Joi.string().min(2).max(200).required(),
-      avatar: Joi.string().required(),
-    }),
+      avatar: Joi.string().required()
+    })
   }),
   createUser
 );
@@ -36,8 +36,8 @@ router.patch(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
-      about: Joi.string().min(2).max(200).required(),
-    }),
+      about: Joi.string().min(2).max(200).required()
+    })
   }),
   updateCurrentUser
 );
@@ -45,8 +45,8 @@ router.patch(
   "/me/avatar",
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().required(),
-    }),
+      avatar: Joi.string().required()
+    })
   }),
   updateAvatarCurrentUser
 );

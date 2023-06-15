@@ -5,7 +5,7 @@ import {
   createCard,
   deleteCardById,
   likeCardById,
-  dislikeCardById,
+  dislikeCardById
 } from "../controllers/cards";
 
 const router = Router();
@@ -16,8 +16,8 @@ router.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
-      link: Joi.string().required(),
-    }),
+      link: Joi.string().required()
+    })
   }),
   createCard
 );
@@ -25,8 +25,8 @@ router.delete(
   "/:cardId",
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().required(),
-    }),
+      cardId: Joi.string().required()
+    })
   }),
   deleteCardById
 );
@@ -34,8 +34,8 @@ router.put(
   "/:cardId/likes",
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().required(),
-    }),
+      cardId: Joi.string().required()
+    })
   }),
   likeCardById
 );
@@ -43,8 +43,8 @@ router.delete(
   "/:cardId/likes",
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().required(),
-    }),
+      cardId: Joi.string().required()
+    })
   }),
   dislikeCardById
 );

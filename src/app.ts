@@ -1,10 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
+import { errors } from "celebrate";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 import auth from "./middlewares/auth";
 import errorsMiddleware from "./middlewares/errors";
-import { errors } from "celebrate";
 import NotFoundError from "./errors/not-found-error";
 
 const { PORT = 3000 } = process.env;
@@ -20,7 +20,7 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 app.use((req, res, next) => {
-  next(new NotFoundError('Такой страницы не существует!'));
+  next(new NotFoundError("Такой страницы не существует!"));
 });
 app.use(errors());
 app.use(errorsMiddleware);

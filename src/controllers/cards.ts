@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomRequest } from "types/types";
-import cardModel from "../models/card";
 import { ObjectId } from "mongoose";
+import { CustomRequest } from "../types/types";
+import cardModel from "../models/card";
 import NotFoundError from "../errors/not-found-error";
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {

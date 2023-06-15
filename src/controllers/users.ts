@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomRequest } from "types/types";
+import { CustomRequest } from "../types/types";
 import userModel from "../models/user";
 import NotFoundError from "../errors/not-found-error";
 
