@@ -8,7 +8,7 @@ import IncorrectDataError from "../errors/incorrect-data-error";
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   userModel
     .find()
-    .then((users) => res.send(users))
+    .then((users) => res.status(200).send({ data: users }))
     .catch(next);
 };
 
@@ -21,12 +21,8 @@ export const getUserById = (
 
   userModel
     .findById(userId)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError("Пользователь не найден");
-      }
-      res.send(user);
-    })
+    .orFail(() => new NotFoundError("Пользователь не найден"))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof Error.CastError) {
         next(new IncorrectDataError("Некорректные данные пользователя"));
@@ -67,12 +63,8 @@ export const updateCurrentUser = (
       { name, about },
       { new: true, runValidators: true }
     )
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError("Пользователь не найден");
-      }
-      res.send(user);
-    })
+    .orFail(() => new NotFoundError("Пользователь не найден"))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof Error.ValidationError) {
         next(
@@ -96,12 +88,8 @@ export const updateAvatarCurrentUser = (
   const userId = req.user?._id;
   userModel
     .findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError("Пользователь не найден");
-      }
-      res.send(user);
-    })
+    .orFail(() => new NotFoundError("Пользователь не найден"))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof Error.ValidationError) {
         next(
