@@ -13,26 +13,32 @@ const cardSchema = new Schema<Card>({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
   link: {
     type: String,
-    required: true
+    validate: {
+      validator: (v: any) => {
+        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+      },
+      message: "Некорректный формат ссылки",
+    },
+    required: true,
   },
   owner: {
     type: Schema.Types.ObjectId,
     ref: "user",
-    required: true
+    required: true,
   },
   likes: {
     type: [Schema.Types.ObjectId],
     ref: "user",
-    default: []
+    default: [],
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 export default model("card", cardSchema);

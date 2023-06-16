@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 import { model, Schema } from "mongoose";
 
 export interface User {
@@ -24,9 +23,7 @@ const userSchema = new Schema<User>({
     type: String,
     validate: {
       validator: (v: any) => {
-        return /^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}(?:\/[\w\-\.\/]*)*(?:\?[\w\-\.=&]*)?(?:#[\w\-]*)?$/.test(
-          v
-        );
+        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
       },
       message: "Некорректный формат ссылки",
     },

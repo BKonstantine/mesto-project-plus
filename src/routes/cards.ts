@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 import { Router } from "express";
 import { celebrate, Joi } from "celebrate";
 import {
@@ -13,43 +15,41 @@ const router = Router();
 router.get("/", getCards);
 router.post(
   "/",
-  celebrate({
+  /* celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
       link: Joi.string()
-        .pattern(
-          /^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}(?:\/[\w\-\.\/]*)*(?:\?[\w\-\.=&]*)?(?:#[\w\-]*)?$/
-        )
+        .pattern(/^(https?:\/\/)(www.)?[^\s]+(#?)$/i)
         .required()
     })
-  }),
+  }), */
   createCard
 );
 router.delete(
   "/:cardId",
-  celebrate({
+  /* celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex().required()
     })
-  }),
+  }), */
   deleteCardById
 );
 router.put(
   "/:cardId/likes",
-  celebrate({
+  /* celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex().required()
     })
-  }),
+  }), */
   likeCardById
 );
 router.delete(
   "/:cardId/likes",
-  celebrate({
+  /* celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex().required()
     })
-  }),
+  }), */
   dislikeCardById
 );
 
