@@ -77,7 +77,7 @@ export const updateCurrentUser = (
       if (err instanceof Error.ValidationError) {
         next(
           new IncorrectDataError(
-            "Некорректные данные при обновлении данных пользователя"
+            "Некорректные данные при обновлении информации о пользователе"
           )
         );
       } else {
@@ -106,11 +106,11 @@ export const updateAvatarCurrentUser = (
       if (err instanceof Error.ValidationError) {
         next(
           new IncorrectDataError(
-            "Некорректные данные при обновлении данных пользователя"
+            "Некорректные данные при обновлении информации о пользователе"
           )
         );
       } else {
-        return next(err);
+        next(err);
       }
     });
 };
