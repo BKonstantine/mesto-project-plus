@@ -28,7 +28,7 @@
       }
     ],
     "quotes": ["error", "double"],
-    "comma-dangle": ["error", "never"],
+    "comma-dangle": ["off", "never"],
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
     "consistent-return": "off",
     "no-useless-escape": "off"

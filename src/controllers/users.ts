@@ -12,7 +12,7 @@ export const getUsers = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-export const getUserById = async (
+export const getUserById = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -33,14 +33,6 @@ export const getUserById = async (
       }
       next(err);
     });
-
-  /* try {
-    const { userId } = req.params;
-    const user = await userModel.findById(userId);
-    res.send(user);
-  } catch (error) {
-    return next(new NotFoundError("Пользователь не найден"));
-  } */
 };
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
@@ -61,7 +53,7 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export const updateCurrentUser = async (
+export const updateCurrentUser = (
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -70,12 +62,31 @@ export const updateCurrentUser = async (
 
   const userId = req.user?._id;
   userModel
-    .findByIdAndUpdate(userId, { name, about }, { new: true })
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+    .findByIdAndUpdate(
+      userId,
+      { name, about },
+      { new: true, runValidators: true }
+    )
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError("Пользователь не найден");
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err instanceof Error.ValidationError) {
+        next(
+          new IncorrectDataError(
+            "Некорректные данные при обновлении данных пользователя"
+          )
+        );
+      } else {
+        next(err);
+      }
+    });
 };
 
-export const updateAvatarCurrentUser = async (
+export const updateAvatarCurrentUser = (
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -84,7 +95,22 @@ export const updateAvatarCurrentUser = async (
 
   const userId = req.user?._id;
   userModel
-    .findByIdAndUpdate(userId, { avatar }, { new: true })
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+    .findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError("Пользователь не найден");
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err instanceof Error.ValidationError) {
+        next(
+          new IncorrectDataError(
+            "Некорректные данные при обновлении данных пользователя"
+          )
+        );
+      } else {
+        return next(err);
+      }
+    });
 };

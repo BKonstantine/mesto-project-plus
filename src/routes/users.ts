@@ -5,7 +5,7 @@ import {
   createUser,
   getUserById,
   updateCurrentUser,
-  updateAvatarCurrentUser
+  updateAvatarCurrentUser,
 } from "../controllers/users";
 
 const router = Router();
@@ -15,8 +15,8 @@ router.get(
   "/:userId",
   celebrate({
     params: Joi.object().keys({
-      userId: Joi.string().length(24).hex().required()
-    })
+      userId: Joi.string().length(24).hex().required(),
+    }),
   }),
   getUserById
 );
@@ -30,8 +30,8 @@ router.post(
         .pattern(
           /^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}(?:\/[\w\-\.\/]*)*(?:\?[\w\-\.=&]*)?(?:#[\w\-]*)?$/
         )
-        .required()
-    })
+        .required(),
+    }),
   }),
   createUser
 );
@@ -40,8 +40,8 @@ router.patch(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
-      about: Joi.string().min(2).max(200).required()
-    })
+      about: Joi.string().min(2).max(200).required(),
+    }),
   }),
   updateCurrentUser
 );
@@ -53,8 +53,8 @@ router.patch(
         .pattern(
           /^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}(?:\/[\w\-\.\/]*)*(?:\?[\w\-\.=&]*)?(?:#[\w\-]*)?$/
         )
-        .required()
-    })
+        .required(),
+    }),
   }),
   updateAvatarCurrentUser
 );
