@@ -27,7 +27,9 @@ router.post(
       name: Joi.string().min(2).max(30).required(),
       about: Joi.string().min(2).max(200).required(),
       avatar: Joi.string()
-        .pattern(/^(https?:\/\/)(www.)?[^\s]+(#?)$/i)
+        .pattern(
+          /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
+        )
         .required(),
     }),
   }),
@@ -48,7 +50,9 @@ router.patch(
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string()
-        .pattern(/^(https?:\/\/)(www.)?[^\s]+(#?)$/i)
+        .pattern(
+          /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
+        )
         .required(),
     }),
   }),

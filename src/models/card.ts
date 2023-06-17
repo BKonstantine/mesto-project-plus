@@ -19,7 +19,7 @@ const cardSchema = new Schema<Card>({
     type: String,
     validate: {
       validator: (v: any) => {
-        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+        return /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(v);
       },
       message: "Некорректный формат ссылки",
     },

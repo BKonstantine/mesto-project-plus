@@ -17,7 +17,7 @@ router.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
       link: Joi.string()
-        .pattern(/^(https?:\/\/)(www.)?[^\s]+(#?)$/i)
+        .pattern(/^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/)
         .required()
     })
   }),
