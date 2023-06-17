@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { Error } from "mongoose";
+import bcryptjs from "bcryptjs";
 import { CustomRequest } from "../types/types";
 import userModel from "../models/user";
 import NotFoundError from "../errors/not-found-error";
 import IncorrectDataError from "../errors/incorrect-data-error";
+import ConflictError from "../errors/conflict-error";
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   userModel
@@ -32,9 +34,12 @@ export const getUserById = (
 };
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
-  const { name, about, avatar } = req.body;
-  userModel
-    .create({ name, about, avatar })
+  const { name, about, avatar, email, password } = req.body;
+  bcryptjs
+    .hash(password, 10)
+    .then((hash) => {
+      userModel.create({ name, about, avatar, password: hash, email });
+    })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof Error.ValidationError) {
@@ -43,9 +48,13 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
             "Некорректные данные при создании пользователя"
           )
         );
-      } else {
-        next(err);
       }
+      if (err.code === 11000) {
+        throw new ConflictError(
+          "Пользователь с таким email уже зарегистрирован"
+        );
+      }
+      next(err);
     });
 };
 
