@@ -23,7 +23,7 @@ const userSchema = new Schema<User>({
     type: String,
     validate: {
       validator: (v: any) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
       },
       message: "Некорректный формат ссылки",
     },
@@ -33,7 +33,7 @@ const userSchema = new Schema<User>({
     required: true,
     validate: {
       validator: (v: any) => {
-        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
       },
       message: "Некорректный формат ссылки",
     },
