@@ -40,12 +40,13 @@ export const deleteCardById = (
 ) => {
   const { cardId } = req.params;
   cardModel
-    .findByIdAndDelete(cardId)
+    .findById(cardId)
     .orFail(() => new NotFoundError("Карточка не найдена"))
     .then((card) => {
       if (card.owner.toString() !== req.user?._id) {
-        next(new ForbiddenError("Удаление чужих карточек запрещено"));
+        throw new ForbiddenError("Удаление чужих карточек запрещено");
       }
+      card.deleteOne();
       res.status(200).send({ data: card });
     })
     .catch((err) => {
