@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { Error } from "mongoose";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { CustomRequest } from "../types/types";
 import userModel from "../models/user";
 import NotFoundError from "../errors/not-found-error";
 import IncorrectDataError from "../errors/incorrect-data-error";
 import ConflictError from "../errors/conflict-error";
+import UnauthorizedError from "../errors/unauthorized-error";
+import { SECRET_KEY } from "../variables/key";
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   userModel
@@ -33,6 +36,36 @@ export const getUserById = (
     });
 };
 
+export const login = (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  return userModel
+    .findOne({ email })
+    .select("+password")
+    .orFail(() => new UnauthorizedError("Неправильные почта или пароль"))
+    .then((user) => {
+      bcryptjs.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          next(new UnauthorizedError("Неправильные почта или пароль"));
+        }
+      });
+      const token = jwt.sign(
+        {
+          _id: user._id.toString(),
+        },
+        SECRET_KEY,
+        {
+          expiresIn: "10m",
+        }
+      );
+      res.send({
+        token,
+        name: user.name,
+        email: user.email,
+      });
+    });
+};
+
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar, email, password } = req.body;
   bcryptjs
@@ -41,17 +74,15 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
       return userModel.create({ name, about, avatar, password: hash, email });
     })
     .then((user) => {
-      res
-        .status(200)
-        .send({
-          data: {
-            name: user.name,
-            about: user.about,
-            avatar: user.avatar,
-            email: user.email,
-            _id: user._id,
-          },
-        });
+      res.status(201).send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+          _id: user._id,
+        },
+      });
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
