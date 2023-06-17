@@ -14,14 +14,12 @@ const userSchema = new Schema<User>({
     default: "Жак-Ив Кусто",
     minlength: 2,
     maxlength: 30,
-    required: false
   },
   about: {
     type: String,
     default: "Исследователь",
     minlength: 2,
     maxlength: 200,
-    required: false
   },
   avatar: {
     type: String,
@@ -35,7 +33,6 @@ const userSchema = new Schema<User>({
       },
       message: "Некорректный формат ссылки",
     },
-    required: false
   },
   email: {
     type: String,

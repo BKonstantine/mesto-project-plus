@@ -22,7 +22,7 @@ router.get(
 );
 router.post(
   "/",
-  celebrate({
+  /* celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).optional().allow(""),
       about: Joi.string().min(2).max(200).optional().allow(""),
@@ -30,13 +30,14 @@ router.post(
         .pattern(
           /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
         )
-        .optional().allow(""),
+        .optional()
+        .allow(""),
       email: Joi.string()
         .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
         .required(),
       password: Joi.string().min(8).required(),
     }),
-  }),
+  }), */
   createUser
 );
 router.patch(
