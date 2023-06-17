@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
-import { errors } from "celebrate";
+import { errors, celebrate, Joi } from "celebrate";
+import { createUser, login } from "./controllers/users";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 import auth from "./middlewares/auth";
@@ -15,6 +16,37 @@ mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 app.use(express.json());
 
 app.use(auth);
+
+app.post(
+  "/signin",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string()
+        .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+        .required(),
+      password: Joi.string().min(8).required(),
+    }),
+  }),
+  login
+);
+
+app.post(
+  "/signup",
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(200),
+      avatar: Joi.string().pattern(
+        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
+      ),
+      email: Joi.string()
+        .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+        .required(),
+      password: Joi.string().min(8).required(),
+    }),
+  }),
+  createUser
+);
 
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);

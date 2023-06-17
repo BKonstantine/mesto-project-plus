@@ -2,7 +2,6 @@ import { Router } from "express";
 import { celebrate, Joi } from "celebrate";
 import {
   getUsers,
-  createUser,
   getUserById,
   updateCurrentUser,
   updateAvatarCurrentUser,
@@ -20,24 +19,6 @@ router.get(
     }),
   }),
   getUserById
-);
-
-router.post(
-  "/",
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(200),
-      avatar: Joi.string().pattern(
-        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
-      ),
-      email: Joi.string()
-        .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-        .required(),
-      password: Joi.string().min(8).required(),
-    }),
-  }),
-  createUser
 );
 
 router.patch(
