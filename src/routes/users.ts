@@ -3,6 +3,7 @@ import { celebrate, Joi } from "celebrate";
 import {
   getUsers,
   getUserById,
+  getCurrentUser,
   updateCurrentUser,
   updateAvatarCurrentUser,
 } from "../controllers/users";
@@ -20,6 +21,8 @@ router.get(
   }),
   getUserById
 );
+
+router.get("/me", getCurrentUser);
 
 router.patch(
   "/me",

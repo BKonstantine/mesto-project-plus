@@ -36,6 +36,22 @@ export const getUserById = (
     });
 };
 
+export const getCurrentUser = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  console.log(req.user);
+  if (req.user) {
+    return userModel
+      .findById(req.user._id)
+      .then((user) => res.status(200).send({ data: user }))
+      .catch((err) => {
+        next(err);
+      });
+  }
+};
+
 export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
