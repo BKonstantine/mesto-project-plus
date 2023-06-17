@@ -22,22 +22,19 @@ router.get(
 );
 router.post(
   "/",
-  /* celebrate({
+  celebrate({
     body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).optional().allow(""),
-      about: Joi.string().min(2).max(200).optional().allow(""),
-      avatar: Joi.string()
-        .pattern(
-          /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
-        )
-        .optional()
-        .allow(""),
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(200),
+      avatar: Joi.string().pattern(
+        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/
+      ),
       email: Joi.string()
         .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
         .required(),
       password: Joi.string().min(8).required(),
     }),
-  }), */
+  }),
   createUser
 );
 router.patch(
