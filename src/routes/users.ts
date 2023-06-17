@@ -11,6 +11,7 @@ import {
 const router = Router();
 
 router.get("/", getUsers);
+
 router.get(
   "/:userId",
   celebrate({
@@ -20,6 +21,7 @@ router.get(
   }),
   getUserById
 );
+
 router.post(
   "/",
   celebrate({
@@ -37,6 +39,7 @@ router.post(
   }),
   createUser
 );
+
 router.patch(
   "/me",
   celebrate({
@@ -47,6 +50,7 @@ router.patch(
   }),
   updateCurrentUser
 );
+
 router.patch(
   "/me/avatar",
   celebrate({
