@@ -41,7 +41,6 @@ export const getCurrentUser = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.user);
   if (req.user) {
     return userModel
       .findById(req.user._id)
