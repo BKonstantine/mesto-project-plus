@@ -1,10 +1,13 @@
-import { Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { CustomRequest } from "../types/types";
+import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import UnauthorizedError from "../errors/unauthorized-error";
 import { SECRET_KEY } from "../variables/key";
 
-export default (req: CustomRequest, res: Response, next: NextFunction) => {
+interface IAuthReq extends Request {
+  user?: string | JwtPayload;
+}
+
+export default (req: IAuthReq, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
@@ -20,9 +23,7 @@ export default (req: CustomRequest, res: Response, next: NextFunction) => {
     next(new UnauthorizedError("Некорректный токен"));
   }
 
-  if (req.user) {
-    req.user._id = payload;
-  }
+  req.user = payload as { _id: JwtPayload };
 
   next();
 };
