@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { errors, celebrate, Joi } from "celebrate";
+import { requestLogger, errorLogger } from "./middlewares/logger";
 import { createUser, login } from "./controllers/users";
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
@@ -14,6 +15,8 @@ const app = express();
 mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 app.use(express.json());
+
+app.use(requestLogger);
 
 app.post(
   "/signin",
@@ -54,6 +57,7 @@ app.use("/cards", cardsRouter);
 app.use((req, res, next) => {
   next(new NotFoundError("Такой страницы не существует!"));
 });
+app.use(errorLogger);
 app.use(errors());
 app.use(errorsMiddleware);
 
