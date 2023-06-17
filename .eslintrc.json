@@ -33,6 +33,7 @@
     "consistent-return": "off",
     "no-useless-escape": "off",
     "arrow-body-style": ["off", "always"],
-    "object-curly-newline": ["off", "never"]
+    "object-curly-newline": ["off", "never"],
+    "newline-per-chained-call": ["off"]
   }
 }

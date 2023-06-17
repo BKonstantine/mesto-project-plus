@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
 
 export interface User {
-  name: string;
-  about: string;
-  avatar: string;
+  name?: string;
+  about?: string;
+  avatar?: string;
   email: string;
   password: string;
 }
@@ -11,25 +11,31 @@ export interface User {
 const userSchema = new Schema<User>({
   name: {
     type: String,
+    default: "Жак-Ив Кусто",
     minlength: 2,
     maxlength: 30,
-    default: "Жак-Ив Кусто",
+    required: false
   },
   about: {
     type: String,
+    default: "Исследователь",
     minlength: 2,
     maxlength: 200,
-    default: "Исследователь",
+    required: false
   },
   avatar: {
     type: String,
+    default:
+      "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
     validate: {
       validator: (v: any) => {
-        return /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(v);
+        return /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
+          v
+        );
       },
       message: "Некорректный формат ссылки",
     },
-    default: "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png"
+    required: false
   },
   email: {
     type: String,
@@ -38,7 +44,7 @@ const userSchema = new Schema<User>({
       validator: (v: any) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
       },
-      message: "Некорректный формат ссылки",
+      message: "Некорректный формат почты",
     },
     unique: true,
   },
@@ -46,6 +52,7 @@ const userSchema = new Schema<User>({
     type: String,
     required: true,
     minlength: 8,
+    select: false,
   },
 });
 

@@ -21,7 +21,7 @@ export const getUserById = (
 ) => {
   const { userId } = req.params;
 
-  userModel
+  return userModel
     .findById(userId)
     .orFail(() => new NotFoundError("Пользователь не найден"))
     .then((user) => res.status(200).send({ data: user }))
@@ -38,23 +38,27 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
   bcryptjs
     .hash(password, 10)
     .then((hash) => {
-      userModel.create({ name, about, avatar, password: hash, email });
+      return userModel.create({ name, about, avatar, password: hash, email });
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => {
+      res
+        .status(200)
+        .send({ data: { name, about, avatar, email, _id: user._id } });
+    })
     .catch((err) => {
-      if (err instanceof Error.ValidationError) {
+      if (err.name === "ValidationError") {
         next(
           new IncorrectDataError(
-            "Некорректные данные при создании пользователя"
+            err
           )
         );
-      }
-      if (err.code === 11000) {
-        throw new ConflictError(
-          "Пользователь с таким email уже зарегистрирован"
+      } else if (err.code === 11000) {
+        next(
+          new ConflictError("Пользователь с таким email уже зарегистрирован")
         );
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
