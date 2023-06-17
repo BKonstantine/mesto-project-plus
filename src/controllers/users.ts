@@ -43,15 +43,19 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     .then((user) => {
       res
         .status(200)
-        .send({ data: { name, about, avatar, email, _id: user._id } });
+        .send({
+          data: {
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+            _id: user._id,
+          },
+        });
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(
-          new IncorrectDataError(
-            err
-          )
-        );
+        next(new IncorrectDataError(err));
       } else if (err.code === 11000) {
         next(
           new ConflictError("Пользователь с таким email уже зарегистрирован")
