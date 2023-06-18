@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import UnauthorizedError from '../errors/unauthorized-error';
-import { SECRET_KEY } from '../variables/key';
+import { SECRET_KEY } from '../config';
 
 interface IAuthReq extends Request {
   user?: string | JwtPayload;

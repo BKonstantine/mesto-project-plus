@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { defaultUser } from '../config';
 
 export interface User {
   name?: string;
@@ -11,20 +12,19 @@ export interface User {
 const userSchema = new Schema<User>({
   name: {
     type: String,
-    default: 'Жак-Ив Кусто',
+    default: defaultUser.name,
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
-    default: 'Исследователь',
+    default: defaultUser.about,
     minlength: 2,
     maxlength: 200,
   },
   avatar: {
     type: String,
-    default:
-      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default: defaultUser.avatar,
     validate: {
       validator: (v: any) => /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
         v,

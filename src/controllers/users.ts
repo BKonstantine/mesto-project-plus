@@ -8,7 +8,7 @@ import NotFoundError from '../errors/not-found-error';
 import IncorrectDataError from '../errors/incorrect-data-error';
 import ConflictError from '../errors/conflict-error';
 import UnauthorizedError from '../errors/unauthorized-error';
-import { SECRET_KEY } from '../variables/key';
+import { SECRET_KEY } from '../config';
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   userModel
@@ -89,7 +89,11 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
   bcryptjs
     .hash(password, 10)
     .then((hash) => userModel.create({
-      name, about, avatar, password: hash, email,
+      name,
+      about,
+      avatar,
+      password: hash,
+      email,
     }))
     .then((user) => {
       res.status(201).send({
