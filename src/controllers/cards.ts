@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from "express";
-import { ObjectId, Error } from "mongoose";
-import { CustomRequest } from "../types/types";
-import cardModel from "../models/card";
-import NotFoundError from "../errors/not-found-error";
-import IncorrectDataError from "../errors/incorrect-data-error";
-import ForbiddenError from "../errors/forbidden-error";
+import { Request, Response, NextFunction } from 'express';
+import { ObjectId, Error } from 'mongoose';
+import { CustomRequest } from '../types/types';
+import cardModel from '../models/card';
+import NotFoundError from '../errors/not-found-error';
+import IncorrectDataError from '../errors/incorrect-data-error';
+import ForbiddenError from '../errors/forbidden-error';
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   cardModel
@@ -16,7 +16,7 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 export const createCard = (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { name, link } = req.body;
   const owner = req.user?._id;
@@ -26,7 +26,7 @@ export const createCard = (
     .catch((err) => {
       if (err instanceof Error.ValidationError) {
         next(
-          new IncorrectDataError("Некорректные данные при создании карточки")
+          new IncorrectDataError('Некорректные данные при создании карточки'),
         );
       }
       next(err);
@@ -36,22 +36,22 @@ export const createCard = (
 export const deleteCardById = (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   cardModel
     .findById(cardId)
-    .orFail(() => new NotFoundError("Карточка не найдена"))
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => {
       if (card.owner.toString() !== req.user?._id) {
-        throw new ForbiddenError("Удаление чужих карточек запрещено");
+        throw new ForbiddenError('Удаление чужих карточек запрещено');
       }
       card.deleteOne();
       res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err instanceof Error.CastError) {
-        next(new IncorrectDataError("Некорректные данные карточки"));
+        next(new IncorrectDataError('Некорректные данные карточки'));
       }
       next(err);
     });
@@ -60,20 +60,20 @@ export const deleteCardById = (
 export const likeCardById = (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   cardModel
     .findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: req.user?._id } },
-      { new: true }
+      { new: true },
     )
-    .orFail(() => new NotFoundError("Карточка не найдена"))
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err instanceof Error.CastError) {
-        next(new IncorrectDataError("Некорректные данные карточки"));
+        next(new IncorrectDataError('Некорректные данные карточки'));
       }
       next(err);
     });
@@ -82,7 +82,7 @@ export const likeCardById = (
 export const dislikeCardById = (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = req.user?._id;
   const { cardId } = req.params;
@@ -90,13 +90,13 @@ export const dislikeCardById = (
     .findByIdAndUpdate(
       cardId,
       { $pull: { likes: userId as unknown as ObjectId } },
-      { new: true }
+      { new: true },
     )
-    .orFail(() => new NotFoundError("Карточка не найдена"))
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err instanceof Error.CastError) {
-        next(new IncorrectDataError("Некорректные данные карточки"));
+        next(new IncorrectDataError('Некорректные данные карточки'));
       }
       next(err);
     });

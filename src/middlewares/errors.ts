@@ -1,15 +1,15 @@
-import { Response, NextFunction } from "express";
-import { CustomRequest, Error } from "../types/types";
+import { Response, NextFunction } from 'express';
+import { CustomRequest, Error } from '../types/types';
 
 export default (
   err: Error,
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
-    message: statusCode === 500 ? "На сервере произошла ошибка" : message,
+    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
   });
   next();
 };

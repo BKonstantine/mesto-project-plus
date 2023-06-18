@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema } from 'mongoose';
 
 export interface User {
   name?: string;
@@ -11,37 +11,33 @@ export interface User {
 const userSchema = new Schema<User>({
   name: {
     type: String,
-    default: "Жак-Ив Кусто",
+    default: 'Жак-Ив Кусто',
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
-    default: "Исследователь",
+    default: 'Исследователь',
     minlength: 2,
     maxlength: 200,
   },
   avatar: {
     type: String,
     default:
-      "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v: any) => {
-        return /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
-          v
-        );
-      },
-      message: "Некорректный формат ссылки",
+      validator: (v: any) => /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
+        v,
+      ),
+      message: 'Некорректный формат ссылки',
     },
   },
   email: {
     type: String,
     required: true,
     validate: {
-      validator: (v: any) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-      },
-      message: "Некорректный формат почты",
+      validator: (v: any) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      message: 'Некорректный формат почты',
     },
     unique: true,
   },
@@ -53,4 +49,4 @@ const userSchema = new Schema<User>({
   },
 });
 
-export default model<User>("user", userSchema);
+export default model<User>('user', userSchema);

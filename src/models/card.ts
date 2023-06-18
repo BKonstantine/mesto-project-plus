@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 interface Card {
   name: string;
@@ -18,23 +18,21 @@ const cardSchema = new Schema<Card>({
   link: {
     type: String,
     validate: {
-      validator: (v: any) => {
-        return /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
-          v
-        );
-      },
-      message: "Некорректный формат ссылки",
+      validator: (v: any) => /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
+        v,
+      ),
+      message: 'Некорректный формат ссылки',
     },
     required: true,
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: "user",
+    ref: 'user',
     required: true,
   },
   likes: {
     type: [Schema.Types.ObjectId],
-    ref: "user",
+    ref: 'user',
     default: [],
   },
   createdAt: {
@@ -43,4 +41,4 @@ const cardSchema = new Schema<Card>({
   },
 });
 
-export default model("card", cardSchema);
+export default model('card', cardSchema);

@@ -27,13 +27,12 @@
         "ts": "never"
       }
     ],
-    "quotes": ["error", "double"],
-    "comma-dangle": ["off", "never"],
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
-    "consistent-return": "off",
-    "no-useless-escape": "off",
-    "arrow-body-style": ["off", "always"],
-    "object-curly-newline": ["off", "never"],
-    "newline-per-chained-call": ["off"]
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_id"]
+      }
+    ],
+    "linebreak-style": "off"
   }
 }
