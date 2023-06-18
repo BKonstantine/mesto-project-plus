@@ -17,37 +17,48 @@ export const getUsers = (req: Request, res: Response, next: NextFunction) => {
     .catch(next);
 };
 
-export const getUserById = (
+const findUser = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+  currentUser: boolean,
+) => {
+  const user = await userModel.findById(
+    currentUser === true ? req.user?._id : req.params.userId,
+  );
+  if (!user) {
+    return next(new NotFoundError('Пользователь не найден'));
+  }
+  return res.json({ data: user });
+};
+
+export const getUserById = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const { userId } = req.params;
-  userModel
-    .findById(userId)
-    .orFail(() => new NotFoundError('Пользователь не найден'))
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err instanceof Error.CastError) {
-        next(new IncorrectDataError('Некорректные данные пользователя'));
-      } else {
-        next(err);
-      }
-    });
+  try {
+    return findUser(req, res, next, false);
+  } catch (err) {
+    if (err instanceof Error.CastError) {
+      return next(new IncorrectDataError('Некорректные данные пользователя'));
+    }
+    return next(err);
+  }
 };
 
-export const getCurrentUser = (
+export const getCurrentUser = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
-  if (req.user) {
-    userModel
-      .findById(req.user._id)
-      .then((user) => res.status(200).send({ data: user }))
-      .catch((err) => {
-        next(err);
-      });
+  try {
+    return findUser(req, res, next, true);
+  } catch (err) {
+    if (err instanceof Error.CastError) {
+      return next(new IncorrectDataError('Некорректные данные пользователя'));
+    }
+    return next(err);
   }
 };
 
@@ -112,6 +123,34 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
       } else if (err.code === 11000) {
         next(
           new ConflictError('Пользователь с таким email уже зарегистрирован'),
+        );
+      } else {
+        next(err);
+      }
+    });
+};
+
+const updateUserData = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+  data: any,
+) => {
+  const userId = req.user?._id;
+  userModel
+    .findByIdAndUpdate(
+      userId,
+      data,
+      { new: true, runValidators: true },
+    )
+    .orFail(() => new NotFoundError('Пользователь не найден'))
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err instanceof Error.ValidationError) {
+        next(
+          new IncorrectDataError(
+            'Некорректные данные при обновлении информации о пользователе',
+          ),
         );
       } else {
         next(err);
