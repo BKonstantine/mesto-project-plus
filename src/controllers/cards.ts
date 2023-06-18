@@ -28,8 +28,9 @@ export const createCard = (
         next(
           new IncorrectDataError('Некорректные данные при создании карточки'),
         );
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -72,8 +73,9 @@ export const likeCardById = (
     .catch((err) => {
       if (err instanceof Error.CastError) {
         next(new IncorrectDataError('Некорректные данные карточки'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -95,7 +97,8 @@ export const dislikeCardById = (
     .catch((err) => {
       if (err instanceof Error.CastError) {
         next(new IncorrectDataError('Некорректные данные карточки'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
