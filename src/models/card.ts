@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { urlRegExp } from '../config';
 
 interface Card {
   name: string;
@@ -18,9 +19,7 @@ const cardSchema = new Schema<Card>({
   link: {
     type: String,
     validate: {
-      validator: (v: any) => /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
-        v,
-      ),
+      validator: (v: any) => urlRegExp.test(v),
       message: 'Некорректный формат ссылки',
     },
     required: true,

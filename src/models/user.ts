@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { defaultUser } from '../config';
+import { defaultUser, urlRegExp, emailRegExp } from '../config';
 
 export interface User {
   name?: string;
@@ -26,9 +26,7 @@ const userSchema = new Schema<User>({
     type: String,
     default: defaultUser.avatar,
     validate: {
-      validator: (v: any) => /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/.test(
-        v,
-      ),
+      validator: (v: any) => urlRegExp.test(v),
       message: 'Некорректный формат ссылки',
     },
   },
@@ -36,7 +34,7 @@ const userSchema = new Schema<User>({
     type: String,
     required: true,
     validate: {
-      validator: (v: any) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      validator: (v: any) => emailRegExp.test(v),
       message: 'Некорректный формат почты',
     },
     unique: true,
