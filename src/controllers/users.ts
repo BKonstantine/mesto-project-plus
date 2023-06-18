@@ -138,11 +138,7 @@ const updateUserData = async (
 ) => {
   const userId = req.user?._id;
   userModel
-    .findByIdAndUpdate(
-      userId,
-      data,
-      { new: true, runValidators: true },
-    )
+    .findByIdAndUpdate(userId, data, { new: true, runValidators: true })
     .orFail(() => new NotFoundError('Пользователь не найден'))
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
@@ -164,27 +160,7 @@ export const updateCurrentUser = (
   next: NextFunction,
 ) => {
   const { name, about } = req.body;
-
-  const userId = req.user?._id;
-  userModel
-    .findByIdAndUpdate(
-      userId,
-      { name, about },
-      { new: true, runValidators: true },
-    )
-    .orFail(() => new NotFoundError('Пользователь не найден'))
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err instanceof Error.ValidationError) {
-        next(
-          new IncorrectDataError(
-            'Некорректные данные при обновлении информации о пользователе',
-          ),
-        );
-      } else {
-        next(err);
-      }
-    });
+  updateUserData(req, res, next, { name, about });
 };
 
 export const updateAvatarCurrentUser = (
@@ -193,21 +169,5 @@ export const updateAvatarCurrentUser = (
   next: NextFunction,
 ) => {
   const { avatar } = req.body;
-
-  const userId = req.user?._id;
-  userModel
-    .findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .orFail(() => new NotFoundError('Пользователь не найден'))
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err instanceof Error.ValidationError) {
-        next(
-          new IncorrectDataError(
-            'Некорректные данные при обновлении информации о пользователе',
-          ),
-        );
-      } else {
-        next(err);
-      }
-    });
+  updateUserData(req, res, next, { avatar });
 };
