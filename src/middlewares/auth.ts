@@ -11,16 +11,19 @@ export default (req: IAuthReq, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new UnauthorizedError('Необходимо авторизоваться');
+    next(new UnauthorizedError('Необходимо авторизоваться'));
   }
 
-  const token = authorization.replace('Bearer ', '');
+  const token = authorization?.replace('Bearer ', '');
   let payload;
 
   try {
-    payload = jwt.verify(token, SECRET_KEY);
+    if (token) {
+      payload = jwt.verify(token, SECRET_KEY);
+    }
   } catch (err) {
     next(new UnauthorizedError('Некорректный токен'));
+    return;
   }
 
   req.user = payload as { _id: JwtPayload };
