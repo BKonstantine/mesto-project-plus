@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { celebrate, Joi } from 'celebrate';
 import {
   getCards,
   createCard,
@@ -7,6 +6,7 @@ import {
   likeCardById,
   dislikeCardById,
 } from '../controllers/cards';
+import cardValid from '../validation/card-valid-config';
 
 const router = Router();
 
@@ -14,46 +14,25 @@ router.get('/', getCards);
 
 router.post(
   '/',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).required(),
-      link: Joi.string()
-        .pattern(
-          /^(https?:\/\/)?(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]+(#)?$/,
-        )
-        .required(),
-    }),
-  }),
+  cardValid.createCardValid,
   createCard,
 );
 
 router.delete(
   '/:cardId',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().length(24).hex().required(),
-    }),
-  }),
+  cardValid.deleteCardByIdValid,
   deleteCardById,
 );
 
 router.put(
   '/:cardId/likes',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().length(24).hex().required(),
-    }),
-  }),
+  cardValid.likeCardByIdValid,
   likeCardById,
 );
 
 router.delete(
   '/:cardId/likes',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().length(24).hex().required(),
-    }),
-  }),
+  cardValid.dislikeCardByIdValid,
   dislikeCardById,
 );
 
