@@ -33,28 +33,26 @@ export const createCard = (
     });
 };
 
-export const deleteCardById = (
+export const deleteCardById = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
   const { cardId } = req.params;
-  cardModel
-    .findById(cardId)
-    .orFail(() => new NotFoundError('Карточка не найдена'))
-    .then((card) => {
-      if (card.owner.toString() !== req.user?._id) {
-        throw new ForbiddenError('Удаление чужих карточек запрещено');
-      }
-      card.deleteOne();
-      res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err instanceof Error.CastError) {
-        next(new IncorrectDataError('Некорректные данные карточки'));
-      }
+  try {
+    const card = await cardModel.findById(cardId).orFail(() => new NotFoundError('Карточка не найдена'));
+    if (card.owner.toString() !== req.user?._id) {
+      throw new ForbiddenError('Удаление чужих карточек запрещено');
+    }
+    await card.deleteOne();
+    res.status(200).send({ data: card });
+  } catch (err) {
+    if (err instanceof Error.CastError) {
+      next(new IncorrectDataError('Некорректные данные карточки'));
+    } else {
       next(err);
-    });
+    }
+  }
 };
 
 export const likeCardById = (
