@@ -23,16 +23,16 @@ export const getUserById = (
   next: NextFunction,
 ) => {
   const { userId } = req.params;
-
-  return userModel
+  userModel
     .findById(userId)
     .orFail(() => new NotFoundError('Пользователь не найден'))
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof Error.CastError) {
         next(new IncorrectDataError('Некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -61,24 +61,25 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .then((user) => {
       bcryptjs.compare(password, user.password).then((matched) => {
         if (!matched) {
-          next(new UnauthorizedError('Неправильные почта или пароль'));
+          return next(new UnauthorizedError('Неправильные почта или пароль'));
         }
+        const token = jwt.sign(
+          {
+            _id: user._id.toString(),
+          },
+          SECRET_KEY,
+          {
+            expiresIn: '10m',
+          },
+        );
+        return res.send({
+          token,
+          name: user.name,
+          email: user.email,
+        });
       });
-      const token = jwt.sign(
-        {
-          _id: user._id.toString(),
-        },
-        SECRET_KEY,
-        {
-          expiresIn: '10m',
-        },
-      );
-      res.send({
-        token,
-        name: user.name,
-        email: user.email,
-      });
-    });
+    })
+    .catch(next);
 };
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
