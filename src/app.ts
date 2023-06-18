@@ -3,11 +3,9 @@ import mongoose from 'mongoose';
 import { errors, celebrate, Joi } from 'celebrate';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import { createUser, login } from './controllers/users';
-import usersRouter from './routes/users';
-import cardsRouter from './routes/cards';
 import auth from './middlewares/auth';
 import errorsMiddleware from './middlewares/errors';
-import NotFoundError from './errors/not-found-error';
+import router from './routes/index';
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -50,13 +48,7 @@ app.post(
 );
 
 app.use(auth);
-
-app.use('/users', usersRouter);
-app.use('/cards', cardsRouter);
-
-app.use((req, res, next) => {
-  next(new NotFoundError('Такой страницы не существует!'));
-});
+app.use('/', router);
 app.use(errorLogger);
 app.use(errors());
 app.use(errorsMiddleware);
